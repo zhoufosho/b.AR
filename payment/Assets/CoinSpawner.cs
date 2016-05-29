@@ -10,7 +10,7 @@ public class CoinSpawner : MonoBehaviour {
 
     public GameObject quarter;
     public GameObject penny;
-    public float donationThreshold;
+    public float donationThreshold = 1000f;
 
     public bool spawn = false;
 
