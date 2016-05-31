@@ -6,6 +6,8 @@ public class TreeControl : MonoBehaviour {
     public static event GrowthAction IncrementGrowth;
     public static event GrowthAction DecrementGrowth;
 
+    public GameObject leaf;
+
     GameObject baseBranch;
 
 	// Use this for initialization
@@ -18,6 +20,7 @@ public class TreeControl : MonoBehaviour {
 
         baseBranch.AddComponent<TreeGrowth>();
         baseBranch.GetComponent<TreeGrowth>().Twisting = 8;
+        baseBranch.GetComponent<TreeGrowth>().Leaf = leaf;
 
         InvokeRepeating("IncreaseGrowth", 5f, 10f);
     }

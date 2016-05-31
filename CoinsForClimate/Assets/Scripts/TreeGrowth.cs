@@ -5,7 +5,7 @@ using System.Collections.Generic;
 public class TreeGrowth : MonoBehaviour {
     // Public Tree Variables
     public int MaxVertices = 2048;
-    public float GrowthDelay = 0.2f;
+    public float GrowthDelay = 0.01f;
     [Range(4, 20)]
     public int NumSides = 10;
     [Range(0.25f, 4f)]
@@ -21,9 +21,12 @@ public class TreeGrowth : MonoBehaviour {
     [Range(0.1f, 2f)]
     public float SegmentLength = 0.2f;
     [Range(0f, 40f)]
-    public float Twisting = 8;
+    public float Twisting = 12;
     [Range(0f, 0.3f)]
     public float BranchProbability = 0.1f;
+    public float LeafProbability = 1f;
+
+    public GameObject Leaf;
 
     // Private Variables
     MeshFilter mFilter;
@@ -113,7 +116,9 @@ public class TreeGrowth : MonoBehaviour {
             branch.GetComponent<TreeGrowth>().BranchAmount = numChildren;
             branch.GetComponent<TreeGrowth>().BaseRadius = radius;
             branch.GetComponent<TreeGrowth>().GrowthDelay = GrowthDelay * 2f;
-            branch.GetComponent<TreeGrowth>().Twisting = 12;
+            branch.GetComponent<TreeGrowth>().Twisting = Twisting + 3;
+            branch.GetComponent<TreeGrowth>().Leaf = Leaf;
+            branch.GetComponent<TreeGrowth>().LeafProbability = LeafProbability - 0.02f;
         }
     }
 
@@ -148,6 +153,16 @@ public class TreeGrowth : MonoBehaviour {
                 z = z * 1.5f;
             }
             transform.Rotate(x, 0f, z);
+            
+            if (Random.value > LeafProbability || numBranchIters == branchCalls)
+            {
+                GameObject leaf = Instantiate(Leaf, lastPosition, transform.localRotation) as GameObject;
+                leaf.transform.localScale = new Vector3(Random.Range(0.2f, 2.0f), Random.Range(0.2f, 2.0f), Random.Range(0.2f, 2.0f));
+                leaf.transform.parent = gameObject.transform;
+                leaf.transform.localPosition = lastPosition;
+
+            }
+
             float extension = (Random.value < 0.9f) ? SegmentLength : SegmentLength * 2f;
             lastPosition += q * new Vector3(0f, extension, 0f);
 
