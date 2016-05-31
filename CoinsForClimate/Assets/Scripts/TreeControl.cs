@@ -19,7 +19,7 @@ public class TreeControl : MonoBehaviour {
         baseBranch.transform.localPosition = transform.position;
 
         baseBranch.AddComponent<TreeGrowth>();
-        baseBranch.GetComponent<TreeGrowth>().Twisting = 8;
+        baseBranch.GetComponent<TreeGrowth>().Twisting = 12;
         baseBranch.GetComponent<TreeGrowth>().Leaf = leaf;
 
         InvokeRepeating("IncreaseGrowth", 5f, 10f);

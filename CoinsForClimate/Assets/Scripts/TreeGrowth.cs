@@ -5,11 +5,11 @@ using System.Collections.Generic;
 public class TreeGrowth : MonoBehaviour {
     // Public Tree Variables
     public int MaxVertices = 2048;
-    public float GrowthDelay = 0.20f;
+    public float GrowthDelay = 0.02f;
     [Range(4, 20)]
     public int NumSides = 10;
     [Range(0.25f, 4f)]
-    public float BaseRadius = 4f;
+    public float BaseRadius = 2f;
     [Range(0.75f, 1.0f)]
     public float RadiusFalloff = 0.98f;
     [Range(0.01f, 0.2f)]
@@ -19,9 +19,9 @@ public class TreeGrowth : MonoBehaviour {
     [Range(0.5f, 1f)]
     public float BranchRoundness = 1f;
     [Range(0.1f, 2f)]
-    public float SegmentLength = 0.2f;
+    public float SegmentLength = 0.15f;
     [Range(0f, 40f)]
-    public float Twisting = 12;
+    public float Twisting = 16;
     [Range(0f, 0.3f)]
     public float BranchProbability = 0.1f;
     public float LeafProbability = 1f;
@@ -157,8 +157,8 @@ public class TreeGrowth : MonoBehaviour {
             if (Random.value > LeafProbability || numBranchIters == branchCalls)
             {
                 GameObject leaf = Instantiate(Leaf, lastPosition, transform.localRotation) as GameObject;
-                leaf.transform.localScale = new Vector3(Random.Range(0.2f, 2.0f), Random.Range(0.2f, 2.0f), Random.Range(0.2f, 2.0f));
                 leaf.transform.parent = gameObject.transform;
+                leaf.transform.localScale = new Vector3(Random.Range(0.5f, 2f), Random.Range(0.5f, 2f), Random.Range(0.5f, 2f));
                 leaf.transform.localPosition = lastPosition;
 
             }
