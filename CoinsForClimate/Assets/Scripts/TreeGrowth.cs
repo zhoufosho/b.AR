@@ -9,17 +9,17 @@ public class TreeGrowth : MonoBehaviour {
     [Range(4, 20)]
     public int NumSides = 10;
     [Range(0.25f, 4f)]
-    public float BaseRadius = 2f;
+    public float BaseRadius = 0.8f;
     [Range(0.75f, 1.0f)]
     public float RadiusFalloff = 0.98f;
     [Range(0.01f, 0.2f)]
-    public float MinimumRadius = 0.25f;
+    public float MinimumRadius = 0.1f;
     [Range(2, 5)]
     public int BranchAmount = 3;
     [Range(0.5f, 1f)]
     public float BranchRoundness = 1f;
     [Range(0.1f, 2f)]
-    public float SegmentLength = 0.15f;
+    public float SegmentLength = 0.05f;
     [Range(0f, 40f)]
     public float Twisting = 16;
     [Range(0f, 0.3f)]
@@ -158,7 +158,7 @@ public class TreeGrowth : MonoBehaviour {
             {
                 GameObject leaf = Instantiate(Leaf, lastPosition, transform.localRotation) as GameObject;
                 leaf.transform.parent = gameObject.transform;
-                leaf.transform.localScale = new Vector3(Random.Range(0.5f, 2f), Random.Range(0.5f, 2f), Random.Range(0.5f, 2f));
+                leaf.transform.localScale = new Vector3(Random.Range(0.2f, 0.6f), Random.Range(0.2f, 0.6f), Random.Range(0.2f, 0.6f));
                 leaf.transform.localPosition = lastPosition;
 
             }
