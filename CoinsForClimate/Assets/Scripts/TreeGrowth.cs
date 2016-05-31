@@ -5,7 +5,7 @@ using System.Collections.Generic;
 public class TreeGrowth : MonoBehaviour {
     // Public Tree Variables
     public int MaxVertices = 2048;
-    public float GrowthDelay = 0.01f;
+    public float GrowthDelay = 0.20f;
     [Range(4, 20)]
     public int NumSides = 10;
     [Range(0.25f, 4f)]
