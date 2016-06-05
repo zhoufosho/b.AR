@@ -3,23 +3,39 @@ using System.Collections;
 
 public class PlantSeed : MonoBehaviour {
 
-    GameObject ring;
     Animator anim;
+    GameObject growthRing;
     TreeControl tree;
 
     bool done = false;
 
-	// Use this for initialization
-	void Start () {
+    void OnEnable()
+    {
+        GameManager.StartGame += Plant;
+    }
+
+
+    void OnDisable()
+    {
+        GameManager.StartGame -= Plant;
+    }
+
+    // Use this for initialization
+    void Start () {
         anim = GetComponent<Animator>();
         tree = GameObject.Find("Tree").GetComponent<TreeControl>();
-        ring = transform.FindChild("Ring").gameObject;
 
         Debug.Assert(anim != null, "Seed object could not find its own Animator component");
-        Debug.AssertFormat(ring != null, "Seed object could not find GameObject '{0}'", "Ring");
         Debug.AssertFormat(tree != null, "Seed object could not find GameObject '{0}'", "Tree");
+
+        growthRing = GameObject.Find("Ring");
 	}
-	
+
+    void Plant()
+    {
+        anim.enabled = true;
+    }
+
 	// Update is called once per frame
 	void Update () {
 
@@ -32,11 +48,9 @@ public class PlantSeed : MonoBehaviour {
                 Camera.main.GetComponent<GroundEnemy>().enabled = true;
                 Camera.main.GetComponent<AirEnemy>().enabled = true;
                 Camera.main.GetComponent<ShotScript>().enabled = true;
-
             }
-
-            ring.gameObject.SetActive(false);
             tree.enabled = true;
+            Destroy(growthRing);
         }
     }
 }
