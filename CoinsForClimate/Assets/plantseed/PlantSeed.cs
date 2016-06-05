@@ -24,10 +24,12 @@ public class PlantSeed : MonoBehaviour {
         if (done == false && anim.GetCurrentAnimatorStateInfo(0).IsName("Done"))
         {
             done = true;
-            Camera.main.GetComponent<GroundEnemy>().enabled = true;
-            Camera.main.GetComponent<AirEnemy>().enabled = true;
-            Camera.main.GetComponent<ShotScript>().enabled = true;
-
+            if(Camera.main.GetComponent<ShotScript>())
+            {
+                Camera.main.GetComponent<GroundEnemy>().enabled = true;
+                Camera.main.GetComponent<AirEnemy>().enabled = true;
+                Camera.main.GetComponent<ShotScript>().enabled = true;
+            }
             tree.enabled = true;
         }
     }
