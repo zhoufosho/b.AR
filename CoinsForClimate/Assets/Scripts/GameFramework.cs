@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using System.Collections;
 
@@ -66,7 +67,12 @@ public class GameFramework : MonoBehaviour {
 	}
 
     public void OnFinishSeedPlace(GameObject caller) { }
-    public void OnFinishTreeWin(GameObject caller) { }
+    public void OnFinishTreeWin(GameObject caller) {
+        GameObject winCanvas = Instantiate(new Canvas()).gameObject;
+
+        Text winText = winCanvas.AddComponent<Text>();
+        winText.text = "Victory!";
+    }
     public void OnFinishTreeLose(GameObject caller) { }
     public void OnFinishDonate(GameObject caller) { }
 }
