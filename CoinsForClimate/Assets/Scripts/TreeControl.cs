@@ -17,6 +17,7 @@ public class TreeControl : MonoBehaviour {
         baseBranch.name = "Base";
         baseBranch.transform.parent = gameObject.transform;
         baseBranch.transform.localPosition = transform.position;
+        baseBranch.transform.localScale = Vector3.one;
 
         baseBranch.AddComponent<TreeGrowth>();
         baseBranch.GetComponent<TreeGrowth>().Twisting = 12;

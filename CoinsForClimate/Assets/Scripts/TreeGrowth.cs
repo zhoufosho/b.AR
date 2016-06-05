@@ -111,6 +111,7 @@ public class TreeGrowth : MonoBehaviour {
             GameObject branch = new GameObject();
             branch.transform.parent = gameObject.transform;
             branch.transform.localPosition = position;
+            branch.transform.localScale = Vector3.one;
 
             branch.AddComponent<TreeGrowth>();
             branch.GetComponent<TreeGrowth>().BranchAmount = numChildren;
