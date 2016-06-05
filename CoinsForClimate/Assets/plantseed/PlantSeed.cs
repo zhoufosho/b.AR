@@ -3,6 +3,7 @@ using System.Collections;
 
 public class PlantSeed : MonoBehaviour {
 
+    ParticleSystem ring;
     Animator anim;
     TreeControl tree;
 
@@ -12,8 +13,10 @@ public class PlantSeed : MonoBehaviour {
 	void Start () {
         anim = GetComponent<Animator>();
         tree = GameObject.Find("Tree").GetComponent<TreeControl>();
+        ring = GameObject.Find("Ring").GetComponent<ParticleSystem>();
 
         Debug.Assert(anim != null, "Seed object could not find its own Animator component");
+        Debug.AssertFormat(ring != null, "Seed object could not find GameObject '{0}'", "Ring");
         Debug.AssertFormat(tree != null, "Seed object could not find GameObject '{0}'", "Tree");
 	}
 	
@@ -29,6 +32,8 @@ public class PlantSeed : MonoBehaviour {
                 Camera.main.GetComponent<GroundEnemy>().enabled = true;
                 Camera.main.GetComponent<AirEnemy>().enabled = true;
                 Camera.main.GetComponent<ShotScript>().enabled = true;
+
+                ring.gameObject.SetActive(false);
             }
             tree.enabled = true;
         }
