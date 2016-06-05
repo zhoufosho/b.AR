@@ -3,7 +3,6 @@ using System.Collections;
 
 public class GroundEnemy : MonoBehaviour {
     public float delay = 4.0f;
-    public float maxRadius = 15f;
     public GameObject groundEnemy;
     public Transform target;
     
@@ -16,16 +15,13 @@ public class GroundEnemy : MonoBehaviour {
 
     void Spawn() {
         Vector3 tpos = target.position;
-        enemyInstance = Instantiate(groundEnemy, new Vector3(Random.Range(tpos.x-maxRadius, tpos.x+maxRadius), 
-                                                             0, 
-                                                             Random.Range(tpos.z-maxRadius, tpos.z+maxRadius)), 
-                                                 Quaternion.identity) as GameObject;
+        enemyInstance = Instantiate(groundEnemy, new Vector3(Random.Range(tpos.x-15, tpos.x+15), 0, Random.Range(tpos.z-15, tpos.z+15)), Quaternion.identity) as GameObject;
         enemyInstance.transform.localScale = new Vector3(0.1f,0.1f,0.1f);
     }
 	
 	// Update is called once per frame
 	void Update () {
-        if (enemyInstance != null && enemyInstance.transform.localScale.x < 1.0f) {
+        if (enemyInstance.transform.localScale.x < 1.0f) {
             enemyInstance.transform.localScale += new Vector3(0.1f,0.1f,0.1f);
         }
         

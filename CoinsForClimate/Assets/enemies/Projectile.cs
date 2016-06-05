@@ -5,6 +5,7 @@ public class Projectile : MonoBehaviour {
     public bool grenade = false;
     public float grenadeRadius = 100.0f;
     public GameObject explosion; 
+    public AudioClip sound;
 
 	// Use this for initialization
 	void Start () {
@@ -33,5 +34,6 @@ public class Projectile : MonoBehaviour {
         }
 
         Destroy (gameObject);
+        AudioSource.PlayClipAtPoint(sound, transform.position);
     }
 }
