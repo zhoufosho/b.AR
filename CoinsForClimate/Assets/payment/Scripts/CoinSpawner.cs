@@ -25,7 +25,8 @@ public class CoinSpawner : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-        jarLabel = GameObject.Find("Jar/JarLabel/Canvas/Text").GetComponent<Text>();
+        //jarLabel = GameObject.Find("Jar/JarLabel/Canvas/Text").GetComponent<Text>();
+        jarLabel = transform.parent.FindChild("JarLabel/Canvas/Text").GetComponent<Text>();
 
         recognizer = new GestureRecognizer();
         recognizer.SetRecognizableGestures(GestureSettings.Tap);

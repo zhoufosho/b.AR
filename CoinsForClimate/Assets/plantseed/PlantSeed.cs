@@ -23,12 +23,7 @@ public class PlantSeed : MonoBehaviour {
     // Use this for initialization
     void Start () {
         anim = GetComponent<Animator>();
-        tree = GameObject.Find("Tree").GetComponent<TreeControl>();
-
         Debug.Assert(anim != null, "Seed object could not find its own Animator component");
-        Debug.AssertFormat(tree != null, "Seed object could not find GameObject '{0}'", "Tree");
-
-        growthRing = GameObject.Find("Ring");
 	}
 
     void Plant()
@@ -43,14 +38,11 @@ public class PlantSeed : MonoBehaviour {
         if (done == false && anim.GetCurrentAnimatorStateInfo(0).IsName("Done"))
         {
             done = true;
-            if(Camera.main.GetComponent<ShotScript>())
+
+            if(GameFramework.instance != null)
             {
-                Camera.main.GetComponent<GroundEnemy>().enabled = true;
-                Camera.main.GetComponent<AirEnemy>().enabled = true;
-                Camera.main.GetComponent<ShotScript>().enabled = true;
+                GameFramework.instance.OnFinishSeedPlace(this.gameObject);
             }
-            tree.enabled = true;
-            Destroy(growthRing);
         }
     }
 }

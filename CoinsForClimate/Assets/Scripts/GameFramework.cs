@@ -21,6 +21,11 @@ public class GameFramework : MonoBehaviour {
     public Vector3 treePoint = Vector3.zero;
     public GameState startState = GameState.SEED_PLACE;
 
+    public GameObject winCanvasPrefab;
+    public GameObject jarWithPromptPrefab;
+    public GameObject jarNoPromptPrefab;
+    public GameObject clockPrefab;
+
     //Awake is always called before any Start functions
     void Awake()
     {
@@ -43,14 +48,14 @@ public class GameFramework : MonoBehaviour {
     // Use this for initialization
     void Start () {
 
+        Debug.Assert(winCanvasPrefab != null, "GameFramework needs a WinCanvas prefab");
+
         // Initialize the first phase of the game
         switch(startState)
         {
             case GameState.SEED_PLACE:
-                SceneManager.LoadScene("Scenes/PromptPlacement", LoadSceneMode.Single);
                 break;
             case GameState.TREE_GROWTH:
-                SceneManager.LoadScene("Scenes/TreeGrowthDemo", LoadSceneMode.Single);
                 break;
             case GameState.TREE_WIN:
                 break;
@@ -66,12 +71,46 @@ public class GameFramework : MonoBehaviour {
 	
 	}
 
-    public void OnFinishSeedPlace(GameObject caller) { }
-    public void OnFinishTreeWin(GameObject caller) {
-        GameObject winCanvas = Instantiate(new Canvas()).gameObject;
+    public void OnFinishSeedPlace(GameObject caller) {
+        Debug.Log("GameFramework: OnFinishSeedPlace");
 
-        Text winText = winCanvas.AddComponent<Text>();
+        // Spawn clock
+        GameObject clock = Instantiate(clockPrefab);
+        GameObject ancestor = caller;
+        while(ancestor.transform.parent != null)
+        {
+            ancestor = ancestor.transform.parent.gameObject;
+        }
+        clock.transform.SetParent(ancestor.transform, false);
+
+        // Enable tree and enemies
+        TreeControl tree = GameObject.Find("Tree").GetComponent<TreeControl>();
+        GameObject growthRing = GameObject.Find("Ring");
+
+        Debug.AssertFormat(tree != null, "Seed object could not find GameObject '{0}'", "Tree");
+
+        if(Camera.main.GetComponent<ShotScript>())
+        {
+            Camera.main.GetComponent<GroundEnemy>().enabled = true;
+            Camera.main.GetComponent<AirEnemy>().enabled = true;
+            Camera.main.GetComponent<ShotScript>().enabled = true;
+        }
+        tree.enabled = true;
+        Destroy(growthRing);
+    }
+    public void OnFinishTreeWin(GameObject caller) {
+        Debug.Log("GameFramework: OnFinishTreeWin");
+
+        // Show victory prompt
+        GameObject winCanvas = Instantiate(winCanvasPrefab);
+        winCanvas.transform.position = caller.transform.position + 1f * Vector3.up;
+
+        Text winText = winCanvas.GetComponent<Text>();
         winText.text = "Victory!";
+
+        // Show jar
+        GameObject jar = Instantiate(jarNoPromptPrefab);
+        jar.transform.position = caller.transform.position + 0.5f * Vector3.up;
     }
     public void OnFinishTreeLose(GameObject caller) { }
     public void OnFinishDonate(GameObject caller) { }

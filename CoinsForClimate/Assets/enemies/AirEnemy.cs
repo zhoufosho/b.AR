@@ -2,11 +2,11 @@
 using System.Collections;
 
 public class AirEnemy : MonoBehaviour {
-    public float maxRadius = 15f;
-    public float startHeight = 10f;
     public float delay = 3.0f;
     public GameObject airEnemy;
     public Transform target;
+    public float spawnRadius = 15f;
+    public float spawnHeight = 10f;
     
     private GameObject enemyInstance;
     
@@ -17,10 +17,8 @@ public class AirEnemy : MonoBehaviour {
 
     void Spawn() {
         Vector3 tpos = target.position;
-        enemyInstance = Instantiate(airEnemy, new Vector3(Random.Range(tpos.x-maxRadius, tpos.x+maxRadius), 
-                                                          startHeight, 
-                                                          Random.Range(tpos.z-maxRadius, tpos.z+maxRadius)), 
-                                              Quaternion.identity) as GameObject;
+        enemyInstance = Instantiate(airEnemy, new Vector3(Random.Range(tpos.x-spawnRadius, tpos.x+spawnRadius), spawnHeight, Random.Range(tpos.z-spawnRadius, tpos.z+spawnRadius)), Quaternion.identity) as GameObject;
+        enemyInstance.transform.GetChild(0).localScale = Vector3.one;
     }
 
     void Update() {

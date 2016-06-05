@@ -26,20 +26,24 @@ public class Clock : MonoBehaviour {
         if (running)
         {
             // Perform countdown
-            startTime -= Time.deltaTime;
+            startTime -= Time.deltaTime / Time.timeScale;
         }
 
         if(startTime < 0f)
         {
             Pause();
-            if(GameFramework.instance)
+            if(this.gameObject.activeSelf && GameFramework.instance != null)
             {
                 GameFramework.instance.OnFinishTreeWin(this.gameObject);
+                this.gameObject.SetActive(false);
             }
         }
 
         // Update clock asset
-        displayDriver.Data = SecondsToTimeStr(startTime);	
+        if (this.gameObject.activeSelf)
+        {
+            displayDriver.Data = SecondsToTimeStr(startTime);	
+        }
 	}
 
     public void Run()
