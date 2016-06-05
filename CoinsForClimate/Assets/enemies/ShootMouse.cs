@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Shoot : MonoBehaviour {
+public class ShootMouse : MonoBehaviour {
     public GameObject projectile;
     public float distance = 10.0f;
     

@@ -18,14 +18,14 @@ public class Projectile : MonoBehaviour {
 	}
     
     void OnCollisionEnter(Collision collision) {
-        if (collision.gameObject.name == "Sphere(Clone)" || collision.gameObject.name == "GroundEnemy(Clone)") {
+        if (collision.gameObject.tag == "Enemy") { 
             Destroy (collision.gameObject);
         }
         
         if (grenade) {
             Collider[] hitColliders = Physics.OverlapSphere(gameObject.transform.position, grenadeRadius);
             for (int i=0; i < hitColliders.Length; i++) {
-                if (hitColliders[i].gameObject.name == "Sphere(Clone)" || hitColliders[i].gameObject.name == "GroundEnemy(Clone)") {
+                if (hitColliders[i].gameObject.tag == "Enemy") {
                     Destroy (hitColliders[i].gameObject);
                 }
             }

@@ -5,6 +5,8 @@ public class AirEnemy : MonoBehaviour {
     public float delay = 3.0f;
     public GameObject airEnemy;
     public Transform target;
+    public float spawnRadius = 15f;
+    public float spawnHeight = 10f;
     
     private GameObject enemyInstance;
     
@@ -15,7 +17,8 @@ public class AirEnemy : MonoBehaviour {
 
     void Spawn() {
         Vector3 tpos = target.position;
-        enemyInstance = Instantiate(airEnemy, new Vector3(Random.Range(tpos.x-15, tpos.x+15), 10, Random.Range(tpos.z-15, tpos.z+15)), Quaternion.identity) as GameObject;
+        enemyInstance = Instantiate(airEnemy, new Vector3(Random.Range(tpos.x-spawnRadius, tpos.x+spawnRadius), spawnHeight, Random.Range(tpos.z-spawnRadius, tpos.z+spawnRadius)), Quaternion.identity) as GameObject;
+        enemyInstance.transform.GetChild(0).localScale = Vector3.one;
     }
 
     void Update() {

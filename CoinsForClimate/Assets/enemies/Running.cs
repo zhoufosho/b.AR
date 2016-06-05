@@ -4,7 +4,7 @@ using System.Collections;
 public class Running : MonoBehaviour {
     public Transform target;
     public float vel = 7.0f;
-    public float speed = 360.0f;
+    public float angularSpeed = 360.0f;
     public float delay = 5.0f;
     
     private Transform mTransform;
@@ -27,7 +27,7 @@ public class Running : MonoBehaviour {
             mTransform.rotation = Quaternion.RotateTowards(
                                                  mTransform.rotation,
                                                  rot,
-                                                 speed * Time.deltaTime);
+                                                 angularSpeed * Time.deltaTime);
          
             // Move forward
             mTransform.position += mTransform.forward * vel * Time.deltaTime;
