@@ -4,20 +4,20 @@ using System.Collections;
 public class PlantSeed : MonoBehaviour {
 
     Animator anim;
-    GameObject growthRing;
-    TreeManager tree;
 
     bool done = false;
 
     void OnEnable()
     {
-        ClimateManager.StartGame += Plant;
+        ClimateManager.StartGame += Activate;
+        GameFramework.OnStartTreeGrowth += Deactivate;
     }
 
 
     void OnDisable()
     {
-        ClimateManager.StartGame -= Plant;
+        ClimateManager.StartGame -= Activate;
+        GameFramework.OnStartTreeGrowth -= Deactivate;
     }
 
     // Use this for initialization
@@ -26,9 +26,14 @@ public class PlantSeed : MonoBehaviour {
         Debug.Assert(anim != null, "Seed object could not find its own Animator component");
 	}
 
-    void Plant()
+    void Activate()
     {
         anim.enabled = true;
+    }
+
+    void Deactivate()
+    {
+        anim.enabled = false;
     }
 
 	// Update is called once per frame
@@ -39,10 +44,7 @@ public class PlantSeed : MonoBehaviour {
         {
             done = true;
 
-            if(GameFramework.instance != null)
-            {
-                GameFramework.instance.OnFinishSeedPlace(this.gameObject);
-            }
+            GameFramework.TriggerTreeGrowth();
         }
     }
 }

@@ -8,9 +8,20 @@ public class Running : MonoBehaviour {
     
     private Transform mTransform;
     private Transform target;
-    
-	// Use this for initialization
-	void Start () {
+
+    void Awake()
+    {
+        GameFramework.OnTreeLose += Deactivate;
+        GameFramework.OnTreeWin += Deactivate;
+    }
+
+    private void Deactivate()
+    {
+        Destroy(this.gameObject);
+    }
+
+    // Use this for initialization
+    void Start () {
         mTransform = transform;
         target = GameObject.FindWithTag("Tree").transform;
         //Object.Destroy(gameObject, delay);

@@ -5,7 +5,7 @@ using System.Collections;
 
 public enum GameState
 {
-    SEED_PLACE,
+    PLANT_SEED,
     TREE_GROWTH,
     TREE_WIN,
     TREE_LOSE
@@ -14,46 +14,113 @@ public enum GameState
 /// <summary>
 /// The skeleton of the game. Manages the transition between game states
 /// </summary>
-public class GameFramework : MonoBehaviour {
-    public static GameFramework instance = null;
+public class GameFramework : MonoBehaviour
+{
+    //public static GameFramework instance = null;
 
-    public float gameTime = 180f; // Starting time when defending the tree
-    public Vector3 treePoint = Vector3.zero;
-    public GameState startState = GameState.SEED_PLACE;
+    public static float gameTime = 10f; // Starting time when defending the tree
+    public static GameState startState = GameState.PLANT_SEED;
 
-    public GameObject winCanvasPrefab;
-    public GameObject jarWithPromptPrefab;
-    public GameObject jarNoPromptPrefab;
-    public GameObject clockPrefab;
+    public static GameState State { get; private set; }
+
+    // Events and delegates to broadcast state changes
+    public delegate void StateChangeHandler();
+    public static event StateChangeHandler OnPlantSeed;
+    public static void TriggerPlantSeed()
+    {
+        State = GameState.PLANT_SEED;
+        if (OnPlantSeed != null)
+        {
+            OnPlantSeed();
+        }
+    }
+
+    public static event StateChangeHandler OnStartTreeGrowth;
+    public static void TriggerTreeGrowth()
+    {
+        State = GameState.TREE_GROWTH;
+        if (OnStartTreeGrowth != null)
+        {
+            OnStartTreeGrowth();
+        }
+    }
+
+    public static event StateChangeHandler OnTreeWin;
+    public static void TriggerTreeWin()
+    {
+        State = GameState.TREE_WIN;
+        if (OnTreeWin != null)
+        {
+            OnTreeWin();
+        }
+    }
+
+    public static event StateChangeHandler OnTreeLose;
+    public static void TriggerTreeLose()
+    {
+        State = GameState.TREE_LOSE;
+        if (OnTreeLose != null)
+        {
+            OnTreeLose();
+        }
+    }
+
+    /// <summary>
+    /// Use this function if you want a gameobject to be active during a particular game state and inactive otherwise
+    /// </summary>
+    /// <param name="state">The state your object should be active</param>
+    /// <param name="activateHandler">Handler for activation. Called when activation state begins.</param>
+    /// <param name="deactivateHandler">Handler for deactivation. Called after activation state ends.</param>
+    public static void ActiveDuringState(GameState state, StateChangeHandler activateHandler, StateChangeHandler deactivateHandler)
+    {
+        switch (state)
+        {
+            case GameState.PLANT_SEED:
+                OnPlantSeed += activateHandler;
+                OnStartTreeGrowth += deactivateHandler;
+                break;
+            case GameState.TREE_GROWTH:
+                OnStartTreeGrowth += activateHandler;
+                OnTreeLose += deactivateHandler;
+                OnTreeWin += deactivateHandler;
+                break;
+            case GameState.TREE_LOSE:
+                OnTreeLose += activateHandler;
+                break;
+            case GameState.TREE_WIN:
+                OnTreeWin += activateHandler;
+                break;
+        }
+
+    }
 
     //Awake is always called before any Start functions
     void Awake()
     {
-        //Check if instance already exists
-        if (instance == null)
+        ////Check if instance already exists
+        //if (instance == null)
 
-            //if not, set instance to this
-            instance = this;
+        //    //if not, set instance to this
+        //    instance = this;
 
-        //If instance already exists and it's not this:
-        else if (instance != this)
+        ////If instance already exists and it's not this:
+        //else if (instance != this)
 
-            //Then destroy this. This enforces our singleton pattern, meaning there can only ever be one instance of a GameManager.
-            Destroy(gameObject);
+        //    //Then destroy this. This enforces our singleton pattern, meaning there can only ever be one instance of a GameManager.
+        //    Destroy(gameObject);
 
         //Sets this to not be destroyed when reloading scene
         DontDestroyOnLoad(gameObject);
     }
 
     // Use this for initialization
-    void Start () {
-
-        Debug.Assert(winCanvasPrefab != null, "GameFramework needs a WinCanvas prefab");
+    void Start()
+    {
 
         // Initialize the first phase of the game
-        switch(startState)
+        switch (startState)
         {
-            case GameState.SEED_PLACE:
+            case GameState.PLANT_SEED:
                 break;
             case GameState.TREE_GROWTH:
                 break;
@@ -64,55 +131,12 @@ public class GameFramework : MonoBehaviour {
             default:
                 break;
         }
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
-
-    public void OnFinishSeedPlace(GameObject caller) {
-        Debug.Log("GameFramework: OnFinishSeedPlace");
-
-        // Spawn clock
-        GameObject clock = Instantiate(clockPrefab);
-        GameObject ancestor = caller;
-        while(ancestor.transform.parent != null)
-        {
-            ancestor = ancestor.transform.parent.gameObject;
-        }
-        clock.transform.SetParent(ancestor.transform, false);
-
-        // Enable tree and enemies
-        GameObject treeObj = GameObject.FindGameObjectWithTag("Tree");
-        TreeManager tree = treeObj.GetComponent<TreeManager>();
-        GameObject growthRing = GameObject.Find("Ring");
-
-        Debug.AssertFormat(tree != null, "Seed object could not find GameObject '{0}'", "Tree");
-
-        if(Camera.main.GetComponent<ShotScript>())
-        {
-            Camera.main.GetComponent<GroundEnemy>().enabled = true;
-            Camera.main.GetComponent<AirEnemy>().enabled = true;
-            Camera.main.GetComponent<ShotScript>().enabled = true;
-        }
-        tree.enabled = true;
-        Destroy(growthRing);
     }
-    public void OnFinishTreeWin(GameObject caller) {
-        Debug.Log("GameFramework: OnFinishTreeWin");
 
-        // Show victory prompt
-        GameObject winCanvas = Instantiate(winCanvasPrefab);
-        winCanvas.transform.position = caller.transform.position + 1f * Vector3.up;
+    // Update is called once per frame
+    void Update()
+    {
 
-        Text winText = winCanvas.GetComponent<Text>();
-        winText.text = "Victory!";
-
-        // Show jar
-        GameObject jar = Instantiate(jarNoPromptPrefab);
-        jar.transform.position = caller.transform.position + 0.5f * Vector3.up;
     }
-    public void OnFinishTreeLose(GameObject caller) { }
-    public void OnFinishDonate(GameObject caller) { }
+
 }

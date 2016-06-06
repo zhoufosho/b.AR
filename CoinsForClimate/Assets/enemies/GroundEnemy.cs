@@ -12,24 +12,38 @@ public class GroundEnemy : MonoBehaviour
     private GameObject enemyInstance;
 
     // Use this for initialization
-    void Start()
+    void Awake()
     {
+        GameFramework.OnStartTreeGrowth += Activate;
+        GameFramework.OnTreeLose += Deactivate;
+        GameFramework.OnTreeWin += Deactivate;
+    }
+
+    void Activate()
+    {
+        enabled = true;
         InvokeRepeating("Spawn", delay, delay);
+    }
+
+    void Deactivate()
+    {
+        CancelInvoke("Spawn");
+        enabled = false;
     }
 
     void Spawn()
     {
         Vector3 tpos = target.position;
         enemyInstance = Instantiate(groundEnemy, new Vector3(Random.Range(tpos.x - spawnRadius, tpos.x + spawnRadius), tpos.y, Random.Range(tpos.z - spawnRadius, tpos.z + spawnRadius)), Quaternion.identity) as GameObject;
-        enemyInstance.transform.FindChild("Body").localScale = new Vector3(0.1f, 0.1f, 0.1f);
+        enemyInstance.transform.GetChild(0).localScale = new Vector3(0.1f, 0.1f, 0.1f);
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (enemyInstance != null && enemyInstance.transform.FindChild("Body").localScale.x < 1.0f)
+        if (enemyInstance != null && enemyInstance.transform.GetChild(0).localScale.x < 1.0f)
         {
-            enemyInstance.transform.FindChild("Body").localScale += new Vector3(0.1f, 0.1f, 0.1f);
+            enemyInstance.transform.GetChild(0).localScale += new Vector3(0.1f, 0.1f, 0.1f);
         }
 
         if (Input.GetMouseButtonDown(0))

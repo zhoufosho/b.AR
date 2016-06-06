@@ -8,16 +8,32 @@ public class Clock : MonoBehaviour {
     public float startTime = 817f;
     public bool running = false;
 
+    void Awake()
+    {
+        //GameFramework.OnStartTreeGrowth += Activate;
+        //GameFramework.OnTreeWin += Deactivate;
+        //GameFramework.OnTreeLose += Deactivate;
+    }
+
+    void Activate()
+    {
+        gameObject.SetActive(true);
+    }
+
+    void Deactivate()
+    {
+        gameObject.SetActive(false);
+    }
+
 	// Use this for initialization
 	void Start () {
 
         displayDriver = transform.FindChild("7SDG").GetComponent<SevenSegmentDriver>();
 
         Debug.AssertFormat(displayDriver != null, "Clock script could not find SevenSegmentDriver {0}", "7SDG");
-        Debug.Assert(GameFramework.instance != null, "Clock script could not access GameFramework instance");
 
         // Set initial time
-        startTime = GameFramework.instance.gameTime;
+        startTime = GameFramework.gameTime;
 	}
 	
 	// Update is called once per frame
@@ -32,9 +48,10 @@ public class Clock : MonoBehaviour {
         if(startTime < 0f)
         {
             Pause();
-            if(this.gameObject.activeSelf && GameFramework.instance != null)
+            if(this.gameObject.activeSelf)
             {
-                GameFramework.instance.OnFinishTreeWin(this.gameObject);
+                //GameFramework.OnFinishTreeWin(this.gameObject);
+                GameFramework.TriggerTreeWin();
                 this.gameObject.SetActive(false);
             }
         }

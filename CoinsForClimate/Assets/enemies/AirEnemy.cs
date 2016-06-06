@@ -11,8 +11,22 @@ public class AirEnemy : MonoBehaviour {
     private GameObject enemyInstance;
     
     // Use this for initialization
-    void Start() {
+    void Awake() {
+        GameFramework.OnStartTreeGrowth += Enable;
+        GameFramework.OnTreeLose += Disable;
+        GameFramework.OnTreeWin += Disable;
+    }
+
+    void Enable()
+    {
+        enabled = true;
         InvokeRepeating("Spawn", delay, delay);
+    }
+
+    void Disable()
+    {
+        CancelInvoke("Spawn");
+        enabled = false;
     }
 
     void Spawn() {
@@ -30,5 +44,4 @@ public class AirEnemy : MonoBehaviour {
             }
         }
     }
-    
 }

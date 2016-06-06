@@ -34,8 +34,13 @@ public class TreeManager : MonoBehaviour {
     GameObject baseBranch;
     public List<GameObject> leaves;
 
+    void Awake()
+    {
+        GameFramework.OnStartTreeGrowth += RunGrowth;
+    }
+
 	// Use this for initialization
-	void Start () {
+	void RunGrowth () {
         // Create the base branch
         baseBranch = new GameObject();
         baseBranch.name = "Base";

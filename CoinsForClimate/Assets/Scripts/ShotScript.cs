@@ -9,8 +9,15 @@ public class ShotScript : MonoBehaviour
 
     GestureRecognizer recognizer;
 
+    void Awake()
+    {
+        GameFramework.OnStartTreeGrowth += Activate;
+        GameFramework.OnTreeLose += Deactivate;
+        GameFramework.OnTreeWin += Deactivate;
+    }
+
     // Use this for initialization
-    void Start()
+    void Activate()
     {
         Time.timeScale = 0.5f;
         recognizer = new GestureRecognizer();
@@ -21,6 +28,11 @@ public class ShotScript : MonoBehaviour
         };
 
         recognizer.StartCapturingGestures();
+    }
+
+    void Deactivate()
+    {
+        enabled = false;
     }
 
     // Update is called once per frame
