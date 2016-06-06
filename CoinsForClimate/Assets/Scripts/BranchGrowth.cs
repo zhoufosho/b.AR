@@ -173,7 +173,7 @@ public class BranchGrowth : MonoBehaviour {
         {
             t += 0.1f;
             currentColor = Color.Lerp(startColor, destinationColor, t);
-            print("Lerping Color: " + currentColor);
+            //print("Lerping Color: " + currentColor);
             mat.color = currentColor;
             yield return new WaitForSeconds(0.3f);
         }

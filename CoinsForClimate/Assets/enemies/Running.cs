@@ -15,6 +15,12 @@ public class Running : MonoBehaviour {
         GameFramework.OnTreeWin += Deactivate;
     }
 
+    void OnDestroy()
+    {
+        GameFramework.OnTreeLose -= Deactivate;
+        GameFramework.OnTreeWin -= Deactivate;
+    }
+
     private void Deactivate()
     {
         Destroy(this.gameObject);
