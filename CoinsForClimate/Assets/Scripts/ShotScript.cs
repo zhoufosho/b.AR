@@ -19,6 +19,7 @@ public class ShotScript : MonoBehaviour
     // Use this for initialization
     void Activate()
     {
+        enabled = true;
         Time.timeScale = 0.5f;
         recognizer = new GestureRecognizer();
         recognizer.SetRecognizableGestures(GestureSettings.Tap);
