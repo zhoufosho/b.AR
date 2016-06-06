@@ -20,7 +20,7 @@ public class GroundEnemy : MonoBehaviour
     void Spawn()
     {
         Vector3 tpos = target.position;
-        enemyInstance = Instantiate(groundEnemy, new Vector3(Random.Range(tpos.x - spawnRadius, tpos.x + spawnRadius), 0, Random.Range(tpos.z - spawnRadius, tpos.z + spawnRadius)), Quaternion.identity) as GameObject;
+        enemyInstance = Instantiate(groundEnemy, new Vector3(Random.Range(tpos.x - spawnRadius, tpos.x + spawnRadius), tpos.y, Random.Range(tpos.z - spawnRadius, tpos.z + spawnRadius)), Quaternion.identity) as GameObject;
         enemyInstance.transform.FindChild("Body").localScale = new Vector3(0.1f, 0.1f, 0.1f);
     }
 

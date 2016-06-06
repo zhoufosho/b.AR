@@ -2,16 +2,17 @@
 using System.Collections;
 
 public class Running : MonoBehaviour {
-    public Transform target;
     public float vel = 7.0f;
     public float speed = 360.0f;
     public float delay = 5.0f;
     
     private Transform mTransform;
+    private Transform target;
     
 	// Use this for initialization
 	void Start () {
         mTransform = transform;
+        target = GameObject.FindWithTag("Tree").transform;
         //Object.Destroy(gameObject, delay);
 	}
 	
@@ -34,7 +35,7 @@ public class Running : MonoBehaviour {
         }
     }
     void OnCollisionEnter(Collision collision) {
-        if (collision.gameObject.name == "Tree") {
+        if (collision.gameObject.name == "Tree" || collision.gameObject.name == "Pot") {
             Destroy (gameObject);
         }
     }

@@ -2,24 +2,28 @@
 using System.Collections;
 
 public class Seeking : MonoBehaviour {
-    public Transform target;
     public float vel = 5.0f;
     public float speed = 50.0f;
     public float delay = 5.0f;
+    public float dropSpeed = 0.01f;
     
     private Transform mTransform;
+    private Transform target;
     
 	// Use this for initialization
 	void Start () {
         mTransform = transform;
+        target = GameObject.FindWithTag("Tree").transform;
         //Object.Destroy(gameObject, delay*10);
 	}
 	
 	// Update is called once per frame
 	void Update () {
         if (gameObject) {
+            if (mTransform.position.y < target.position.y) Destroy (gameObject);
             // Calculate the direction from the current position to the target
             Vector3 dir = target.position - mTransform.position;
+            dir.y = 0f;
             // Calculate the rotation required to point at the target
             Quaternion rot = Quaternion.LookRotation(dir);
             // Rotate from the current rotation towards the target rotation, but not
@@ -31,11 +35,11 @@ public class Seeking : MonoBehaviour {
             mTransform.rotation *= Quaternion.Euler(0f, 45f*Mathf.Sin(Time.deltaTime), 0f);
          
             // Move forward
-            mTransform.position += mTransform.forward * vel * Time.deltaTime;
+            mTransform.position += mTransform.forward * vel * Time.deltaTime - new Vector3(0f, dropSpeed, 0f);
         }
     }
     void OnCollisionEnter(Collision collision) {
-        if (collision.gameObject.name == "Tree" ) {
+        if (collision.gameObject.name == "Tree" || collision.gameObject.name == "Pot") {
             Destroy (gameObject);
         }
     }

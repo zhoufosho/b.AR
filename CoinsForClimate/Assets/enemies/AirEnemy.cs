@@ -12,7 +12,7 @@ public class AirEnemy : MonoBehaviour {
     
     // Use this for initialization
     void Start() {
-        InvokeRepeating("Spawn", delay, delay*10);
+        InvokeRepeating("Spawn", delay, delay);
     }
 
     void Spawn() {
