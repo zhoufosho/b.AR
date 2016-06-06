@@ -5,7 +5,10 @@ using System.Collections;
 public class ShotScript : MonoBehaviour
 {
     public GameObject shotPrefab;
-    public AudioSource audioSrc;
+    public AudioClip shotAudioClip;
+
+    public float forwardForce = 1200f;
+    public float torqueForce = 5000f;
 
     GestureRecognizer recognizer;
 
@@ -54,14 +57,19 @@ public class ShotScript : MonoBehaviour
     void ShootObject(Ray headRay)
     {
         // Spawn a ball at the point
-        if(audioSrc != null)
-        {
-            audioSrc.Play();
-        }
         GameObject shotObj = Instantiate(shotPrefab, transform.position, transform.rotation) as GameObject;
+        AudioSource shotAudio = shotObj.GetComponent<AudioSource>();
+        if(shotAudio != null)
+        {
+            shotAudio.clip = shotAudioClip;
+            shotAudio.Play();
+        }
 
         // Apply a forward force
         Rigidbody rb = shotObj.GetComponent<Rigidbody>();
-        rb.AddForce(headRay.direction * 1200);
+        rb.AddForce(headRay.direction * forwardForce);
+
+        // Apply a torque so projectile spins
+        rb.AddTorque(Camera.main.transform.right * -torqueForce, ForceMode.Impulse);
     }
 }

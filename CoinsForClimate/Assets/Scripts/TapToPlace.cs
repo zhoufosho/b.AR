@@ -34,12 +34,13 @@ public class TapToPlace : MonoBehaviour
                 // Move this  object to where the raycast hit the
                 // Spatial Mapping mesh.
                 transform.position = hitInfo.point;
+                transform.rotation.SetLookRotation(Vector3.up);
 
                 // Rotate this object's parent object to face the user.
-                Quaternion toQuat = Camera.main.transform.localRotation;
-                toQuat.x = 0;
-                toQuat.z = 0;
-                transform.rotation = toQuat;
+                //Quaternion toQuat = Camera.main.transform.localRotation;
+                //toQuat.x = 0;
+                //toQuat.z = 0;
+                //transform.rotation = toQuat;
             }
         }
     }

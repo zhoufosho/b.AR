@@ -29,13 +29,14 @@ public class Running : MonoBehaviour {
     // Use this for initialization
     void Start () {
         mTransform = transform;
-        target = GameObject.FindWithTag("Tree").transform;
+        target = GameObject.FindWithTag("Jar").transform;
         //Object.Destroy(gameObject, delay);
 	}
 	
 	// Update is called once per frame
 	void Update () {
         if (gameObject) {
+            Debug.LogFormat("Target position: {0}", target.position);
             // Calculate the direction from the current position to the target
             Vector3 dir = target.position - mTransform.position;
             // Calculate the rotation required to point at the target

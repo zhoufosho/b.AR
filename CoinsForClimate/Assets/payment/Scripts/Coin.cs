@@ -4,6 +4,8 @@ using System.Collections;
 public class Coin : MonoBehaviour {
 
     //public Vector3 force;
+    public static string coinSoundPath = "Resources/Coins Sfx/Mp3/Coins_Single/Coins_Single_";
+    public static AudioClip[] coinSounds = null;
 
     void Awake()
     {
@@ -12,12 +14,32 @@ public class Coin : MonoBehaviour {
         {
             GetComponent<Rigidbody>().useGravity = false;
         }
+
+        if(Coin.coinSounds == null)
+        {
+            Coin.coinSounds = new AudioClip[10] {
+                Resources.Load(coinSoundPath + "00") as AudioClip,
+                Resources.Load(coinSoundPath + "02") as AudioClip,
+                Resources.Load(coinSoundPath + "07") as AudioClip,
+                Resources.Load(coinSoundPath + "12") as AudioClip,
+                Resources.Load(coinSoundPath + "13") as AudioClip,
+                Resources.Load(coinSoundPath + "15") as AudioClip,
+                Resources.Load(coinSoundPath + "19") as AudioClip,
+                Resources.Load(coinSoundPath + "21") as AudioClip,
+                Resources.Load(coinSoundPath + "27") as AudioClip,
+                Resources.Load(coinSoundPath + "55") as AudioClip,
+            };
+        }
     }
 
 	// Use this for initialization
 	void Start () {
         //Debug.Log("Coin Start func");
         //GetComponent<Rigidbody>().useGravity = false;
+
+        Debug.AssertFormat(Coin.coinSounds.Length == 10, 
+            "Expecting Coin.coinSounds to have 10 elements, instead has {0}", 
+            Coin.coinSounds.Length);
 	}
 	
 	// Update is called once per frame
@@ -30,4 +52,17 @@ public class Coin : MonoBehaviour {
         //    GetComponent<Rigidbody>().AddForce(force, ForceMode.Impulse);
         //}
 	}
+
+    // Play random coin sound when coin collides with another object
+    public void OnCollisionEnter(Collision col)
+    {
+        if(col.gameObject.GetComponent<Coin>() != null)
+        {
+            int randIx = (int)(Random.value * coinSounds.Length);
+            AudioClip randSound = coinSounds[randIx];
+
+            GetComponent<AudioSource>().clip = randSound;
+            GetComponent<AudioSource>().Play();
+        }
+    }
 }

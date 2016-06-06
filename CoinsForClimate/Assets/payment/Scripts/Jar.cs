@@ -19,16 +19,4 @@ public class Jar : MonoBehaviour {
 	
 	}
 
-    // Play appropriate sound when a coin collides with it
-    public void OnCollisionEnter(Collision col)
-    {
-        if(col.gameObject.GetComponent<Coin>() != null)
-        {
-            int randIx = (int)(Random.value * coinSounds.Count);
-            AudioClip randSound = coinSounds[randIx];
-
-            audio.clip = randSound;
-            audio.Play();
-        }
-    }
 }

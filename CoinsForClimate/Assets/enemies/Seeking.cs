@@ -30,7 +30,7 @@ public class Seeking : MonoBehaviour {
     // Use this for initialization
     void Start () {
         mTransform = transform;
-        target = GameObject.FindWithTag("Tree").transform;
+        target = GameObject.FindWithTag("Jar").transform;
         //Object.Destroy(gameObject, delay*10);
 	}
 	
