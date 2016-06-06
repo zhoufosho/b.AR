@@ -37,10 +37,39 @@ public class TreeManager : MonoBehaviour {
     void Awake()
     {
         GameFramework.OnStartTreeGrowth += RunGrowth;
+        ClimateManager.ClimateFall += BurstLeaves;
+        ClimateManager.ClimateImprove += ImproveAura;
+
     }
 
-	// Use this for initialization
-	void RunGrowth () {
+    void OnDisable()
+    {
+        ClimateManager.ClimateFall -= BurstLeaves;
+        ClimateManager.ClimateImprove -= ImproveAura;
+    }
+
+    void BurstLeaves()
+    {
+        print("Bursting Leaves");
+        for (int i = 0; i < 20; i++)
+        {
+            if (leaves.Count == 0) break;
+            int randIndex = Random.Range(0, leaves.Count);
+
+            GameObject leaf = leaves[randIndex];
+            leaves.RemoveAt(randIndex);
+
+            leaf.GetComponentInChildren<LeafController>().Implode();
+        }
+    }
+
+    void ImproveAura()
+    {
+
+    }
+
+    // Use this for initialization
+    void RunGrowth () {
         // Create the base branch
         baseBranch = new GameObject();
         baseBranch.name = "Base";
@@ -75,15 +104,5 @@ public class TreeManager : MonoBehaviour {
     public void AddLeaf(GameObject leaf)
     {
         leaves.Add(leaf);
-    }
-
-    void OnCollisionEnter(Collision col)
-    {
-        GameObject collidingObject = col.gameObject;
-        if (collidingObject != null && collidingObject.tag == "Enemy")
-        {
-            Destroy(collidingObject);
-            ClimateManager.TreeHit();
-        }
     }
 }

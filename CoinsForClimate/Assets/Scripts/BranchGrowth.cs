@@ -70,8 +70,9 @@ public class BranchGrowth : MonoBehaviour {
 
     void ChangeTreeColor()
     {
-        if (IsChangingColor) StopCoroutine("LerpColor");
-        StartCoroutine("LerpColor");
+        float climateStrength = ClimateManager.GetClimateStrength();
+        Color destinationColor = Color.Lerp(treeMaterialDead.color, treeMaterialHealthy.color, climateStrength);
+        mat.color = destinationColor;
     }
 
     void IncreaseGrowthDelay()
@@ -173,7 +174,6 @@ public class BranchGrowth : MonoBehaviour {
         {
             t += 0.1f;
             currentColor = Color.Lerp(startColor, destinationColor, t);
-            //print("Lerping Color: " + currentColor);
             mat.color = currentColor;
             yield return new WaitForSeconds(0.3f);
         }
@@ -238,6 +238,8 @@ public class BranchGrowth : MonoBehaviour {
         else
             mesh.Clear();
         mRenderer.sharedMaterial = mat;
+        mRenderer.receiveShadows = false;
+        mRenderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
 
         // Assign vertex data
         mesh.vertices = vertexList.ToArray();

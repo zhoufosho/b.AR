@@ -54,6 +54,7 @@ public class Running : MonoBehaviour {
     void OnCollisionEnter(Collision collision) {
         if (collision.gameObject.name == "Tree" || collision.gameObject.name == "Pot") {
             Destroy (gameObject);
+            ClimateManager.TreeHit();
         }
     }
 }

@@ -16,6 +16,12 @@ public class Seeking : MonoBehaviour {
         GameFramework.OnTreeWin += Deactivate;
     }
 
+    void OnDestroy()
+    {
+        GameFramework.OnTreeLose -= Deactivate;
+        GameFramework.OnTreeWin -= Deactivate;
+    }
+
     private void Deactivate()
     {
         Destroy(this.gameObject);
@@ -52,6 +58,7 @@ public class Seeking : MonoBehaviour {
     void OnCollisionEnter(Collision collision) {
         if (collision.gameObject.name == "Tree" || collision.gameObject.name == "Pot") {
             Destroy (gameObject);
+            ClimateManager.TreeHit();
         }
     }
 }

@@ -3,7 +3,10 @@ using System.Collections;
 
 public class LeafController : MonoBehaviour {
     bool IsChangingColor = false;
+    public bool ReadyToImplode = false;
+    float t = 0.0f;
     Color currentColor;
+    Vector3 originalScale = new Vector3(0.5f, 0.5f, 0.5f);
 
     Material leafMaterialHealthy;
     Material leafMaterialDead;
@@ -22,6 +25,23 @@ public class LeafController : MonoBehaviour {
         gameObject.GetComponent<MeshRenderer>().sharedMaterial = mat;
     }
 
+    void Update()
+    {
+        if (ReadyToImplode)
+        {
+            t += (Time.deltaTime / 2);
+
+            float newX = originalScale.x * (1.0f - t);
+            float newY = originalScale.y * (1.0f - t);
+            float newZ = originalScale.z * (1.0f - t);
+
+            Vector3 newScale = new Vector3(newX, newY, newZ);
+
+            this.gameObject.transform.parent.localScale = newScale;
+            if (t > 1f) Destroy(gameObject.transform.parent.gameObject);
+        }
+    }
+
     void OnEnable()
     {
         ClimateManager.ClimateChange += ChangeLeafColor;
@@ -35,7 +55,10 @@ public class LeafController : MonoBehaviour {
     void ChangeLeafColor()
     {
         if (IsChangingColor) StopCoroutine("LerpColor");
-        StartCoroutine("LerpColor");
+
+        float climateStrength = ClimateManager.GetClimateStrength();
+        Color destinationColor = Color.Lerp(leafMaterialDead.color, leafMaterialHealthy.color, climateStrength);
+        mat.color = destinationColor;
     }
 
     IEnumerator LerpColor()
@@ -56,5 +79,13 @@ public class LeafController : MonoBehaviour {
         }
         IsChangingColor = false;
         yield break;
+    }
+
+    public void Implode()
+    {
+        print("Imploding");
+        originalScale = gameObject.transform.localScale;
+        this.gameObject.transform.parent.localScale = new Vector3(3f, 3f, 3f);
+        ReadyToImplode = true;
     }
 }

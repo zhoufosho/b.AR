@@ -34,7 +34,6 @@ public class ClimateManager : MonoBehaviour {
     public static float GetClimateStrength()
     {
         float climateStrength = (float) ClimateStrength / MAX_STRENGTH;
-        print("Climate Strength: " + climateStrength);
         return climateStrength;
     }
 
@@ -45,16 +44,17 @@ public class ClimateManager : MonoBehaviour {
 
     public static void TreeHit()
     {
+        print("Tree Hit");
         DecrementClimateStrength();
         if (ClimateChange != null) ClimateChange();
-        if (ClimateImprove != null) ClimateImprove();
+        if (ClimateFall != null) ClimateFall();
     }
 
     public static void TreeBoost()
     {
         IncrementClimateStrength();
         if (ClimateChange != null) ClimateChange();
-        if (ClimateFall != null) ClimateFall();
+        if (ClimateImprove != null) ClimateImprove();
     }
 
     private static void IncrementClimateStrength()
