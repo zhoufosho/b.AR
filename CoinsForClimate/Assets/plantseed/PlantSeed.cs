@@ -29,6 +29,7 @@ public class PlantSeed : MonoBehaviour {
     void Activate()
     {
         anim.enabled = true;
+        anim.SetTrigger("Start");
     }
 
     void Deactivate()

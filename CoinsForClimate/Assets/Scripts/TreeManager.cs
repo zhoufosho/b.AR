@@ -92,6 +92,7 @@ public class TreeManager : MonoBehaviour {
         baseGrowth.LeafProbability = LeafProbability;
         baseGrowth.Leaf = Leaf;
         baseGrowth.BranchLevel = BranchLevel;
+        baseGrowth.treeController = this;
 
         leaves = new List<GameObject>();
     }

@@ -52,6 +52,12 @@ public class BranchGrowth : MonoBehaviour {
         return branchCallsForSprout;
     }
 
+    void Awake()
+    {
+        treeController = GameObject.FindGameObjectWithTag("Tree").GetComponent<TreeManager>();
+        print("BranchGrowth finding tree: " + GameObject.FindGameObjectWithTag("Tree").name);
+    }
+
     // Add a Mesh Filter/Renderer
     void OnEnable()
     {
@@ -90,7 +96,6 @@ public class BranchGrowth : MonoBehaviour {
 
     // Use this for initialization
     void Start () {
-        treeController = GameObject.FindGameObjectWithTag("Tree").GetComponent<TreeManager>();
         vertexList = new List<Vector3>();
         triangleList = new List<int>();
         lastPosition = Vector3.zero;
@@ -148,6 +153,7 @@ public class BranchGrowth : MonoBehaviour {
             branchGrowth.LeafProbability = LeafProbability - NEW_BRANCH_LEAF_PROBABILITY_FALLOFF;
             branchGrowth.Leaf = Leaf;
             branchGrowth.BranchLevel = BranchLevel + 1;
+            branchGrowth.treeController = this.treeController;
         }
     }
 
@@ -158,7 +164,7 @@ public class BranchGrowth : MonoBehaviour {
         leaf.transform.parent = gameObject.transform;
         leaf.transform.localScale = new Vector3(Random.Range(0.1f, 0.4f), Random.Range(0.1f, 0.4f), Random.Range(0.1f, 0.4f));
         leaf.transform.localPosition = lastPosition;
-
+        
         treeController.AddLeaf(leaf);
     }
 
