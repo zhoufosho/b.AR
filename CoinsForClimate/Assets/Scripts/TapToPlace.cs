@@ -8,8 +8,7 @@ public class TapToPlace : MonoBehaviour
     void OnSelect()
     {
         // Start the game
-        GameObject mngr = GameObject.Find("GameManager");
-        mngr.GetComponent<GameManager>().broadcastStart();
+        ClimateManager.BroadcastStart();
 
         placed = true;
     }

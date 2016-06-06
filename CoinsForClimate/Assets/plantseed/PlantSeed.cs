@@ -5,19 +5,19 @@ public class PlantSeed : MonoBehaviour {
 
     Animator anim;
     GameObject growthRing;
-    TreeControl tree;
+    TreeManager tree;
 
     bool done = false;
 
     void OnEnable()
     {
-        GameManager.StartGame += Plant;
+        ClimateManager.StartGame += Plant;
     }
 
 
     void OnDisable()
     {
-        GameManager.StartGame -= Plant;
+        ClimateManager.StartGame -= Plant;
     }
 
     // Use this for initialization

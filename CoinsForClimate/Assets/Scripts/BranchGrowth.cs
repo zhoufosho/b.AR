@@ -2,45 +2,50 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public class TreeGrowth : MonoBehaviour {
-    // Public Tree Variables
-    public int MaxVertices = 2048;
-    public float GrowthDelay = 0.02f;
-    [Range(4, 20)]
-    public int NumSides = 10;
-    [Range(0.25f, 4f)]
-    public float BaseRadius = 0.8f;
-    [Range(0.75f, 1.0f)]
-    public float RadiusFalloff = 0.98f;
-    [Range(0.01f, 0.2f)]
-    public float MinimumRadius = 0.1f;
-    [Range(2, 5)]
-    public int BranchAmount = 3;
-    [Range(0.5f, 1f)]
-    public float BranchRoundness = 1f;
-    [Range(0.1f, 2f)]
-    public float SegmentLength = 0.05f;
-    [Range(0f, 40f)]
-    public float Twisting = 16;
-    [Range(0f, 0.3f)]
-    public float BranchProbability = 0.1f;
-    public float LeafProbability = 1f;
+public class BranchGrowth : MonoBehaviour {
+    public TreeManager treeController;
 
+    public int MaxVertices;
+    public float GrowthDelay;
+    public int NumSides;
+    public float BaseRadius;
+    public float RadiusFalloff;
+    public float MinimumRadius;
+    public int BranchAmount;
+    public float BranchRoundness;
+    public float SegmentLength;
+    public float Twisting;
+    public float BranchProbability;
+    public float LeafProbability;
+    public int BranchLevel;
     public GameObject Leaf;
 
-    // Private Variables
     MeshFilter mFilter;
     MeshRenderer mRenderer;
-
-    // Tree Parameters
     List<Vector3> vertexList; // Vertex list
     List<int> triangleList; // Triangle list
-    Material treeMaterial;
+    Material mat;
+    Material treeMaterialHealthy;
+    Material treeMaterialDead;
+    Color currentColor;
     float[] ringShape;
     int lastRingVertexIndex;
     Vector3 lastPosition;
     int branchCallsForSprout;
     int branchCalls;
+    bool IsChangingColor = false;
+
+    public float GROWTH_INCREASE_FACTOR = 2f;
+    public float GROWTH_DECREASE_FACTOR = 0.5f;
+    public float MIN_GROWTH = 0.01f;
+    public float BRANCH_RATIO = 0.33f;
+    public float NEW_BRANCH_GROWTH_FACTOR = 2f;
+    public float NEW_BRANCH_TWISTING_INCREMENT = 4;
+    public float NEW_BRANCH_LEAF_PROBABILITY_FALLOFF = 0.02f;
+    public float RANDOM_SPROUT_PROBABILITY = 0.01f;
+    public float SPROUT_RADIUS_FALLOFF = 0.9f;
+    public float RANDOM_SEGMENT_EXTENSION_PROBABILITY = 0.9f;
+    public float SEGMENT_EXTENSION_FACTOR = 2f;
 
     public int getBranchCallsForSprout()
     {
@@ -55,36 +60,48 @@ public class TreeGrowth : MonoBehaviour {
         mRenderer = gameObject.GetComponent<MeshRenderer>();
         if (mRenderer == null) mRenderer = gameObject.AddComponent<MeshRenderer>();
 
-        TreeControl.IncrementGrowth += DecreaseGrowthDelay;
-        TreeControl.DecrementGrowth += IncreaseGrowthDelay;
+        ClimateManager.ClimateChange += ChangeTreeColor;
     }
 
     void OnDisable()
     {
-        TreeControl.IncrementGrowth -= DecreaseGrowthDelay;
-        TreeControl.DecrementGrowth -= IncreaseGrowthDelay;
+        ClimateManager.ClimateChange -= ChangeTreeColor;
+    }
+
+    void ChangeTreeColor()
+    {
+        if (IsChangingColor) StopCoroutine("LerpColor");
+        StartCoroutine("LerpColor");
     }
 
     void IncreaseGrowthDelay()
     {
         print("Slowing growth");
-        GrowthDelay *= 2f;
+        GrowthDelay *= GROWTH_INCREASE_FACTOR;
     }
 
     void DecreaseGrowthDelay()
     {
         print("Speeding up growth");
-        GrowthDelay *= 0.5f;
-        GrowthDelay = (GrowthDelay > 0.01f) ? GrowthDelay : 0.01f;
+        GrowthDelay *= GROWTH_DECREASE_FACTOR;
+        GrowthDelay = (GrowthDelay > MIN_GROWTH) ? GrowthDelay : MIN_GROWTH;
     }
 
     // Use this for initialization
     void Start () {
+        treeController = GameObject.FindGameObjectWithTag("Tree").GetComponent<TreeManager>();
         vertexList = new List<Vector3>();
         triangleList = new List<int>();
         lastPosition = Vector3.zero;
         lastRingVertexIndex = -1;
-        treeMaterial = Resources.Load("TreeBark", typeof(Material)) as Material;
+
+        treeMaterialHealthy = Resources.Load("TreeBarkHealthy", typeof(Material)) as Material;
+        treeMaterialDead = Resources.Load("TreeBarkDead", typeof(Material)) as Material;
+
+        mat = Resources.Load("TreeTemp", typeof(Material)) as Material;
+
+        currentColor = Color.Lerp(treeMaterialDead.color, treeMaterialHealthy.color, ClimateManager.GetClimateStrength());
+        mat.color = currentColor;
 
         SetBranchLimits();
         StartCoroutine("Branch");
@@ -96,7 +113,8 @@ public class TreeGrowth : MonoBehaviour {
         int maxBranchCallsByVertexCount = MaxVertices / verticesPerLevel;
         int maxBranchCallsByRadiusFalloff = (int)(Mathf.Log(MinimumRadius / BaseRadius) / Mathf.Log(RadiusFalloff));
         branchCalls = (maxBranchCallsByVertexCount > maxBranchCallsByRadiusFalloff) ? maxBranchCallsByRadiusFalloff : maxBranchCallsByVertexCount;
-        branchCallsForSprout = branchCalls / 3;
+        branchCallsForSprout = (int)( (float)branchCalls * BRANCH_RATIO );
+        print("BranchCallsForSprout: " + branchCallsForSprout);
     }
 
     // Update is called once per frame
@@ -109,18 +127,58 @@ public class TreeGrowth : MonoBehaviour {
         for (int i = 0; i < BranchAmount; i++)
         {
             GameObject branch = new GameObject();
+            branch.name = "BranchLevel" + BranchLevel;
             branch.transform.parent = gameObject.transform;
             branch.transform.localPosition = position;
             branch.transform.localScale = Vector3.one;
 
-            branch.AddComponent<TreeGrowth>();
-            branch.GetComponent<TreeGrowth>().BranchAmount = numChildren;
-            branch.GetComponent<TreeGrowth>().BaseRadius = radius;
-            branch.GetComponent<TreeGrowth>().GrowthDelay = GrowthDelay * 2f;
-            branch.GetComponent<TreeGrowth>().Twisting = Twisting + 3;
-            branch.GetComponent<TreeGrowth>().Leaf = Leaf;
-            branch.GetComponent<TreeGrowth>().LeafProbability = LeafProbability - 0.02f;
+            BranchGrowth branchGrowth = branch.AddComponent<BranchGrowth>();
+            branchGrowth.MaxVertices = MaxVertices;
+            branchGrowth.GrowthDelay = GrowthDelay * NEW_BRANCH_GROWTH_FACTOR;
+            branchGrowth.NumSides = NumSides;
+            branchGrowth.BaseRadius = radius;
+            branchGrowth.RadiusFalloff = RadiusFalloff;
+            branchGrowth.MinimumRadius = MinimumRadius;
+            branchGrowth.BranchAmount = numChildren;
+            branchGrowth.BranchRoundness = BranchRoundness;
+            branchGrowth.SegmentLength = SegmentLength;
+            branchGrowth.Twisting = Twisting + NEW_BRANCH_TWISTING_INCREMENT;
+            branchGrowth.BranchProbability = BranchProbability;
+            branchGrowth.LeafProbability = LeafProbability - NEW_BRANCH_LEAF_PROBABILITY_FALLOFF;
+            branchGrowth.Leaf = Leaf;
+            branchGrowth.BranchLevel = BranchLevel + 1;
         }
+    }
+
+    void SproutLeaf(Vector3 position, Quaternion rotation)
+    {
+        GameObject leaf = Instantiate(Leaf, position, rotation) as GameObject;
+        leaf.name = "LeafLevel" + BranchLevel;
+        leaf.transform.parent = gameObject.transform;
+        leaf.transform.localScale = new Vector3(Random.Range(0.1f, 0.4f), Random.Range(0.1f, 0.4f), Random.Range(0.1f, 0.4f));
+        leaf.transform.localPosition = lastPosition;
+
+        treeController.AddLeaf(leaf);
+    }
+
+    IEnumerator LerpColor()
+    {
+        float climateStrength = ClimateManager.GetClimateStrength();
+        Color destinationColor = Color.Lerp(treeMaterialDead.color, treeMaterialHealthy.color, climateStrength);
+        Color startColor = new Color(currentColor.r, currentColor.g, currentColor.b);
+        IsChangingColor = true;
+
+        float t = 0f;
+        while (t <= 1f)
+        {
+            t += 0.1f;
+            currentColor = Color.Lerp(startColor, destinationColor, t);
+            print("Lerping Color: " + currentColor);
+            mat.color = currentColor;
+            yield return new WaitForSeconds(0.3f);
+        }
+        IsChangingColor = false;
+        yield break;
     }
 
     IEnumerator Branch()
@@ -135,10 +193,9 @@ public class TreeGrowth : MonoBehaviour {
         {
             numBranchIters++;
 
-
             if (vertexList.Count != 0) UncapBranch();
-            if (Random.value > 0.9) SproutBranches(lastPosition, radius * 0.1f, 0); // Randomly sprout
-            if (numBranchIters == branchCallsForSprout) SproutBranches(lastPosition, radius*0.9f, BranchAmount-1);
+            if (Random.value < RANDOM_SPROUT_PROBABILITY) SproutBranches(lastPosition, radius * SPROUT_RADIUS_FALLOFF, 0); // Randomly sprout
+            if (numBranchIters == branchCallsForSprout) SproutBranches(lastPosition, radius* SPROUT_RADIUS_FALLOFF, BranchAmount-1);
 
             AddRingVertices(q, radius);
             if (lastRingVertexIndex >= 0) AddTriangles(lastRingVertexIndex);
@@ -155,16 +212,9 @@ public class TreeGrowth : MonoBehaviour {
             }
             transform.Rotate(x, 0f, z);
             
-            if (Random.value > LeafProbability || numBranchIters == branchCalls)
-            {
-                GameObject leaf = Instantiate(Leaf, lastPosition, transform.localRotation) as GameObject;
-                leaf.transform.parent = gameObject.transform;
-                leaf.transform.localScale = new Vector3(Random.Range(0.2f, 0.6f), Random.Range(0.2f, 0.6f), Random.Range(0.2f, 0.6f));
-                leaf.transform.localPosition = lastPosition;
+            if (Random.value < LeafProbability || numBranchIters == branchCalls) SproutLeaf(lastPosition, transform.localRotation);
 
-            }
-
-            float extension = (Random.value < 0.9f) ? SegmentLength : SegmentLength * 2f;
+            float extension = (Random.value < RANDOM_SEGMENT_EXTENSION_PROBABILITY) ? SegmentLength : SegmentLength * SEGMENT_EXTENSION_FACTOR;
             lastPosition += q * new Vector3(0f, extension, 0f);
 
             // Prep for next extension
@@ -187,7 +237,7 @@ public class TreeGrowth : MonoBehaviour {
             mesh = mFilter.sharedMesh = new Mesh();
         else
             mesh.Clear();
-        mRenderer.sharedMaterial = treeMaterial;
+        mRenderer.sharedMaterial = mat;
 
         // Assign vertex data
         mesh.vertices = vertexList.ToArray();

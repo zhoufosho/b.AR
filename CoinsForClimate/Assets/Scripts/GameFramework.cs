@@ -84,7 +84,8 @@ public class GameFramework : MonoBehaviour {
         clock.transform.SetParent(ancestor.transform, false);
 
         // Enable tree and enemies
-        TreeControl tree = GameObject.Find("Tree").GetComponent<TreeControl>();
+        GameObject treeObj = GameObject.FindGameObjectWithTag("Tree");
+        TreeManager tree = treeObj.GetComponent<TreeManager>();
         GameObject growthRing = GameObject.Find("Ring");
 
         Debug.AssertFormat(tree != null, "Seed object could not find GameObject '{0}'", "Tree");

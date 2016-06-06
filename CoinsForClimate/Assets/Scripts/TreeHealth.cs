@@ -6,6 +6,7 @@ public class Grass : MonoBehaviour {
     public float grassMaxRadius = 1f;
     public int grassNumPlants = 100;
 
+
     [Range(0f, 1f)]
     public float growth = 1f;
 
