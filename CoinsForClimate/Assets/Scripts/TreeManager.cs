@@ -81,7 +81,7 @@ public class TreeManager : MonoBehaviour {
         baseBranch = new GameObject();
         baseBranch.name = "Base";
         baseBranch.transform.parent = gameObject.transform;
-        baseBranch.transform.localPosition = transform.position;
+        baseBranch.transform.localPosition = Vector3.zero;//transform.position;
         baseBranch.transform.localScale = Vector3.one;
 
         BranchGrowth baseGrowth = baseBranch.AddComponent<BranchGrowth>();
