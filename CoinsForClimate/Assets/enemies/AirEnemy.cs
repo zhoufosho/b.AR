@@ -32,7 +32,7 @@ public class AirEnemy : MonoBehaviour {
     void Spawn() {
         Vector3 tpos = target.position;
         enemyInstance = Instantiate(airEnemy, new Vector3(Random.Range(tpos.x-spawnRadius, tpos.x+spawnRadius), spawnHeight, Random.Range(tpos.z-spawnRadius, tpos.z+spawnRadius)), Quaternion.identity) as GameObject;
-        enemyInstance.transform.GetChild(0).localScale = Vector3.one;
+        //enemyInstance.transform.GetChild(0).localScale = Vector3.one;
     }
 
     void Update() {

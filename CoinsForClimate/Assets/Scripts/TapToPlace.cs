@@ -4,6 +4,16 @@ public class TapToPlace : MonoBehaviour
 {
     bool placed = false;
 
+    void Awake()
+    {
+        GameFramework.OnStartTreeGrowth += Deactivate;
+    }
+
+    void Deactivate()
+    {
+        enabled = false;
+    }
+
     // Called by GazeGestureManager when the user performs a Select gesture
     void OnSelect()
     {

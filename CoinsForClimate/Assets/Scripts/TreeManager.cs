@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 public class TreeManager : MonoBehaviour {
     // Configurable Tree Values
-    [Range(500, 1500)]
+    [Range(200, 1500)]
     public int MaxVertices;
     [Range(0.01f, 1f)]
     public float GrowthDelay;
@@ -37,6 +37,7 @@ public class TreeManager : MonoBehaviour {
     void Awake()
     {
         GameFramework.OnStartTreeGrowth += RunGrowth;
+        GameFramework.OnTreeWin += Deactivate;
         ClimateManager.ClimateFall += BurstLeaves;
         ClimateManager.ClimateImprove += ImproveAura;
 
@@ -44,8 +45,14 @@ public class TreeManager : MonoBehaviour {
 
     void OnDisable()
     {
+        GameFramework.OnTreeWin -= Deactivate;
         ClimateManager.ClimateFall -= BurstLeaves;
         ClimateManager.ClimateImprove -= ImproveAura;
+    }
+
+    void Deactivate()
+    {
+        gameObject.SetActive(false);
     }
 
     void BurstLeaves()

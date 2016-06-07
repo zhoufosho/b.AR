@@ -11,6 +11,7 @@ public class PlantSeed : MonoBehaviour {
     {
         ClimateManager.StartGame += Activate;
         GameFramework.OnStartTreeGrowth += Deactivate;
+        GameFramework.OnTreeWin += Deactivate;
     }
 
 
@@ -18,6 +19,7 @@ public class PlantSeed : MonoBehaviour {
     {
         ClimateManager.StartGame -= Activate;
         GameFramework.OnStartTreeGrowth -= Deactivate;
+        GameFramework.OnTreeWin -= Deactivate;
     }
 
     // Use this for initialization

@@ -18,7 +18,7 @@ public class GameFramework : MonoBehaviour
 {
     //public static GameFramework instance = null;
 
-    public static float gameTime = 30f; // Starting time when defending the tree
+    public static float gameTime = 90f; // Starting time when defending the tree
     public static GameState startState = GameState.PLANT_SEED;
 
     public static GameState State { get; private set; }

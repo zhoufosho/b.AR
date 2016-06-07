@@ -6,6 +6,7 @@ public class ShotScript : MonoBehaviour
 {
     public GameObject shotPrefab;
     public AudioClip shotAudioClip;
+    public int numShots = 0;
 
     public float forwardForce = 1200f;
     public float torqueForce = 5000f;
@@ -71,5 +72,7 @@ public class ShotScript : MonoBehaviour
 
         // Apply a torque so projectile spins
         rb.AddTorque(Camera.main.transform.right * -torqueForce, ForceMode.Impulse);
+
+        numShots += 1;
     }
 }

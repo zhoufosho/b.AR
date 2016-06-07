@@ -4,7 +4,7 @@ using System.Collections;
 public class Coin : MonoBehaviour {
 
     //public Vector3 force;
-    public static string coinSoundPath = "Resources/Coins Sfx/Mp3/Coins_Single/Coins_Single_";
+    public static string coinSoundPath = "Coins Sfx/Mp3/Coins_Single/Coins_Single_";
     public static AudioClip[] coinSounds = null;
 
     void Awake()
@@ -40,6 +40,8 @@ public class Coin : MonoBehaviour {
         Debug.AssertFormat(Coin.coinSounds.Length == 10, 
             "Expecting Coin.coinSounds to have 10 elements, instead has {0}", 
             Coin.coinSounds.Length);
+
+        Debug.AssertFormat(Coin.coinSounds[0] != null, "Coin.coinSounds could not find sound assets in Resources folder");
 	}
 	
 	// Update is called once per frame
@@ -56,13 +58,14 @@ public class Coin : MonoBehaviour {
     // Play random coin sound when coin collides with another object
     public void OnCollisionEnter(Collision col)
     {
-        if(col.gameObject.GetComponent<Coin>() != null)
-        {
-            int randIx = (int)(Random.value * coinSounds.Length);
-            AudioClip randSound = coinSounds[randIx];
+        //if(col.gameObject.GetComponent<Coin>() != null)
+        //{
+            int randIx = (int)(Random.value * Coin.coinSounds.Length);
+            AudioClip randSound = Coin.coinSounds[randIx];
 
             GetComponent<AudioSource>().clip = randSound;
             GetComponent<AudioSource>().Play();
-        }
+        //Debug.LogFormat("Playing sound clip {0}", randSound.name);
+        //}
     }
 }
